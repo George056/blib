@@ -2,7 +2,7 @@
 #ifndef ARRAY
 #define ARRAY
 
-#include "../Container/Container.hpp"
+#include "Container.hpp"
 #include <stdexcept>
 
 namespace george_data_structures {
