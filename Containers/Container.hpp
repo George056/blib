@@ -4,7 +4,7 @@
 /*
 This is an abstract class used as a base for all container types
 */
-#include "../Iterator/Iterator.hpp"
+#include "../Iterator.hpp"
 
 namespace george_data_structures {
 
