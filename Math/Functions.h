@@ -6,8 +6,22 @@ namespace blib{
   double abs(double value);
   long double absl(long double value);
 
+  unsigned int factorial(unsigned int i);
+  unsigned long factoriall(unsigned long i);
+  unsigned long long factorialll(unsigned long long i);
+
+  double hypo(double leg1, double leg2);
+  double leg(double hypot, double leg);
+
   double sqrt(double value);
   long double sqrtl(long double value);
+
+  double log(double expo);
+  double lg(double expo);
+  double ln(double expo);
+  double log_base(unsigned int base, double expo);
+
+  long gcd(long denum1, long denum2);
 
   float cosf(float value);
   double cos(double value);
