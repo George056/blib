@@ -1,11 +1,10 @@
-#pragma once
 #ifndef ARRAY
 #define ARRAY
 
 #include "Container.hpp"
 #include <stdexcept>
 
-namespace george_data_structures {
+namespace blib {
 
 		template <typename arrayType, size_t SIZE>
 		class array : public container<arrayType, arrayType*, const arrayType*> {

@@ -1,12 +1,11 @@
 #ifndef CONTAINER
 #define CONTAINER
-#pragma once
 /*
 This is an abstract class used as a base for all container types
 */
 #include "../Iterator.hpp"
 
-namespace george_data_structures {
+namespace blib {
 
 		template <typename dataType, class iterator_type, class const_iterator_type = input_iterator<dataType>>
 		class container {
