@@ -1,27 +1,58 @@
 #ifndef FUNCTIONS
 #define FUNCTIONS
 
+#include "Fraction.h"
+#include "Constants.h"
+
 namespace blib{
-  float absf(float value);
+
+  template <typename return_type>
+  return_type abs(return_type);
+
+  /*float absf(float value);
   double abs(double value);
-  long double absl(long double value);
+  long double absl(long double value);*/
 
-  unsigned int factorial(unsigned int i);
+  template <typename return_type = int>
+  class __factorial__{
+  public:
+    __factorial__() = default;
+    return_type operator ()(unsigned int n){
+      return n > 1 ? (n * this->operator()(n - 1)) : 1;
+    }
+  }
+
+  template <typename return_type = int>
+  __factorial__<return_type> factorial;
+
+  /*unsigned int factorial(unsigned int i);
   unsigned long factoriall(unsigned long i);
-  unsigned long long factorialll(unsigned long long i);
+  unsigned long long factorialll(unsigned long long i);*/
 
-  double hypo(double leg1, double leg2);
-  double leg(double hypot, double leg);
+  int ceil(double value);
+  int floor(double value);
+  int round(double value);
+
+  double square(double base);
+  double cube(double base);
 
   double sqrt(double value);
   long double sqrtl(long double value);
+
+  long double exp(double power);
+  long double pow(double base, double power);
+
+  double hypo(double leg1, double leg2);
+  double leg(double hypot, double leg);
 
   double log(double expo);
   double lg(double expo);
   double ln(double expo);
   double log_base(unsigned int base, double expo);
 
-  long gcd(long denum1, long denum2);
+  long gcd(long a, long b);
+
+  long lcm(long a, long b);
 
   float cosf(float value);
   double cos(double value);
