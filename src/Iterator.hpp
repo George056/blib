@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef ITERATOR
 #define ITERATOR
 
