@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Node_Abstract.hpp"
 #include <memory>
 #include <stdexcept>
 

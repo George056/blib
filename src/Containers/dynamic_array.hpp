@@ -1,3 +1,6 @@
+#ifndef DYNAMIC_ARRAY
+#define DYNAMIC_ARRAY
+
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -8,7 +11,7 @@
 		#define GROWTH_RATE 2
 #endif
 
-namespace george_data_structures {
+namespace blib {
 		/// <summary>
 		/// <para>This class serves as the equivalent of std::vector. 
 		/// Most functions operate and have the same name as the std version.</para>
@@ -144,3 +147,5 @@ namespace george_data_structures {
 
 
 };
+
+#endif

@@ -5,10 +5,10 @@
 This file holds the abstract instances of nodes
 */
 
-#include "../Container/Container.hpp"
+#include "Container.hpp"
 #include<memory>
 
-namespace george_data_structures {
+namespace blib {
 
 		template <typename dataType>
 		class node_abstract_singular {

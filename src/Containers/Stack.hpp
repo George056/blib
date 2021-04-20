@@ -1,11 +1,11 @@
 #ifndef STACK
 #define STACK
 
-#include "../Node_Abstract/Node_Abstract.hpp"
-#include "../Container/Container.hpp"
+#include "Node_Abstract.hpp"
+#include "Container.hpp"
 #include <stdexcept>
 
-namespace george_data_structures {
+namespace blib {
 		template <typename T>
 		class stack : public container<T, T*, const T*> {
 		public:

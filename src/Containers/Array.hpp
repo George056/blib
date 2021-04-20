@@ -4,7 +4,7 @@
 #include "Container.hpp"
 #include <stdexcept>
 
-namespace george_data_structures {
+namespace blib {
 
 		/// <summary>
 		/// An object based (C++) array data structure.
