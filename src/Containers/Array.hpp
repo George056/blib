@@ -182,6 +182,10 @@ namespace blib {
 				/// <returns>The array that was just added to.</returns>
 				inline array& push_back(value_type item) { __array[__size_used++] = item; return *this; }
 
+				/// <summary>
+				/// Obtain the beginning of the array.
+				/// </summary>
+				/// <returns>An iterator to the beginning of the array.</returns>
 				inline virtual iterator begin() override {
 						return iterator(&__array[0]);
 				}
@@ -190,6 +194,10 @@ namespace blib {
 						return iterator((&__array[SIZE]) + 1);
 				}
 
+				/// <summary>
+				/// Obtain the beginning of the array.
+				/// </summary>
+				/// <returns>A constant iterator to the beginning of the array.</returns>
 				inline virtual const_iterator cbegin() const override {
 						return const_iterator(&__array[0]);
 				}
