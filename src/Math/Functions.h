@@ -33,8 +33,17 @@ namespace blib{
   int floor(double value);
   int round(double value);
 
-  double square(double base);
-  double cube(double base);
+  double square(long base);
+  long double squarel(long long base);
+  double cube(long base);
+  long double cubel(long long base);
+
+  double hypo(double leg1, double leg2);
+  double leg(double hypot, double leg);
+
+  long gcd(long a, long b);
+
+  long lcm(long a, long b);
 
   double sqrt(double value);
   long double sqrtl(long double value);
@@ -42,17 +51,10 @@ namespace blib{
   long double exp(double power);
   long double pow(double base, double power);
 
-  double hypo(double leg1, double leg2);
-  double leg(double hypot, double leg);
-
   double log(double expo);
   double lg(double expo);
   double ln(double expo);
   double log_base(unsigned int base, double expo);
-
-  long gcd(long a, long b);
-
-  long lcm(long a, long b);
 
   float cosf(float value);
   double cos(double value);

@@ -48,7 +48,7 @@ namespace blib{
   }*/
 
   int ceil(double value){
-    return ++((int)value);
+    return ((int)value) + 1;
   }
   int floor(double value){
     return (int)value;
@@ -59,11 +59,40 @@ namespace blib{
     return (temp_double > 0.5) ? ++temp_int : temp_int;
   }
 
-  double square(double base){
+  double square(long base){
     return base * base;
   }
-  double cube(double base){
+  double squarel(long long base) {
+    return base * base;
+  }
+  double cube(long base){
     return base * base * base;
+  }
+  double cubel(long long base) {
+    return base * base * base;
+  }
+
+  double hypo(double leg1, double leg2) {
+    return sqrt(pow(leg1, 2) + pow(leg2, 2));
+  }
+  double leg(double hypot, double leg) {
+    return sqrt(pow(hypot, 2) - pow(leg, 2));
+  }
+
+  long gcd(long a, long b) {
+    if (a == 0) return b;
+    else if (b == 0) return a;
+    else {
+      long remander = a % b;
+      return gcd(b, remander);
+    }
+  }
+
+  long lcm(long a, long b) {
+    long temp_a = a, temp_b = b;
+    while (temp_a != temp_b) {
+      (temp_a > temp_b) ? temp_b += b : temp_a += a;
+    }
   }
 
   double sqrt(double value);
@@ -72,33 +101,10 @@ namespace blib{
   long double exp(double power);
   long double pow(double base, double power);
 
-  double hypo(double leg1, double leg2){
-    return sqrt(pow(leg1, 2) + pow(leg2, 2));
-  }
-  double leg(double hypot, double leg){
-    return sqrt(pow(hypot, 2) - pow(leg, 2));
-  }
-
   double log(double expo);
   double lg(double expo);
   double ln(double expo);
   double log_base(unsigned int base, double expo);
-
-  long gcd(long a, long b){
-    if(a == 0) return b;
-    else if (b == 0) return a;
-    else{
-      long remander = a % b;
-      return gcd(b, remander);
-    }
-  }
-
-  long lcm(long a, long b){
-    long temp_a = a, temp_b = b;
-    while(temp_a != temp_b){
-      (temp_a > temp_b) ? temp_b += b : temp_a += a;
-    }
-  }
 
   float cosf(float value);
   double cos(double value);
