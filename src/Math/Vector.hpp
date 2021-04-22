@@ -1,7 +1,8 @@
-#ifndef MATRIX
-#define MATRIX
+#ifndef VECTOR
+#define VECTOR
 
 #include "../Containers/Array.hpp"
+#include "Functions.h"
 
 #include<stdexcept>
 
@@ -17,7 +18,7 @@ namespace blib{
   /// is used to reduce the complexity and size of a vector (and confusion of 
   /// using blib::dynamic_array which is approximately the same as std::vector).
   /// </summary>
-  /// <typeparam name="T"></typeparam>
+  /// <typeparam name="T">The type held by the vector (must have the numeric operator defined for it).</typeparam>
   template<typename T, size_t SIZE>
   class vector{
   private:
@@ -27,13 +28,28 @@ namespace blib{
     size_t size(){ return __vector.size(); }
 
   public:
+
+    using value_type = T;
+    using size_type = size_t;
+    using reference = value_type&;
+    using constant_reference = const value_type&;
+    using pointer_type = T*;
+
+    /// <summary>
+    /// Default constructs to the 0 vector.
+    /// </summary>
     vector() : __vector(), __orient{ horizontal }{
       for(size_t i = 0; i < SIZE; ++i){
         __vector[i] = 0;
       }
     }
 
-    vector(T* _first, T* _second) : __vector() , __orient{ horizontal }{
+    /// <summary>
+    /// Copy over a given range. Done with pointers.
+    /// </summary>
+    /// <param name="_first">The beginning of the range</param>
+    /// <param name="_second">The end of the range</param>
+    vector(pointer_type _first, pointer_type _second) : __vector() , __orient{ horizontal }{
       for(auto i = _first, int j = 0; i < _second; ++i, ++j){
         __vector[j] = *i;
       }
@@ -45,7 +61,50 @@ namespace blib{
     vector& operator =(const vector&) = default;
     vector& operator =(vector&) = default;
 
-    vector operator +(const vector& right){
+    /// <summary>
+    /// Access the given element of the vector (does not check for out of bounds).
+    /// </summary>
+    /// <param name="index">The location in the vector to access</param>
+    /// <returns>A reference to the accessed element</returns>
+    reference operator [](size_t index) {
+      return __vector[index];
+    }
+
+    /// <summary>
+    /// Access the given element of the vector (does not check for out of bounds).
+    /// </summary>
+    /// <param name="index">The location in the vector to access</param>
+    /// <returns>A const reference to the accessed element</returns>
+    constant_reference operator [](size_t index) const {
+      return __vector[index];
+    }
+
+    /// <summary>
+    /// Access the given element of the vector.
+    /// </summary>
+    /// <param name="index">The location in the vector to access</param>
+    /// <returns>A reference to the accessed element</returns>
+    reference at(size_t index) {
+      return __vector.at(index);
+    }
+
+    /// <summary>
+    /// Access the given element of the vector (does not check for out of bounds).
+    /// </summary>
+    /// <param name="index">The location in the vector to access</param>
+    /// <returns>A const reference to the accessed element</returns>
+    constant_reference at(size_t index) const {
+      return __vector.at(index);
+    }
+
+    /// <summary>
+    /// Add to vectors together.
+    /// </summary>
+    /// <param name="right">The vector to be added on the right side.</param>
+    /// <returns>The resulting vector after the addition.</returns>
+    /// <exception cref="std::logic_error">Thrown when the index is out of the range of the vector.</exception>
+    /// <exception cref="std::logic_error">Thrown when the vectors are of different orientations.</exception>
+    vector operator +(const vector& right) const {
       if(size() != right.size()) throw std::logic_error("Mismatched vector sizes");
 
       if(__orient == right.__orient){
@@ -58,7 +117,7 @@ namespace blib{
       else throw std::logic_error("Mismatched vector orientation");
     }
 
-    vector operator -(const vector& right){
+    vector operator -(const vector& right) const {
       if(size() != right.size()) throw std::logic_error("Mismatched vector sizes");
 
       if(__orient == right.__orient){
@@ -71,24 +130,43 @@ namespace blib{
       else throw std::logic_error("Mismatched vector orientation");
     }
 
-    vector operator -(){
-      array<T, SIZE> temp;
-      for(size_t i = 0; i < size(); ++i){
-        temp[i] = -__array[i];
+    vector& operator -(){
+      for (size_type i = 0; i < __vector.size(); ++i) {
+        __vector[i] *= -1;
       }
-      return temp;
+      return *this;
     }
 
-    vector operator *(auto value){
-      array<T, SIZE> temp;
-      for(size_t i= 0; i < size(); ++i){
-        temp[i] = value * __array[i];
+    vector operator *(value_type value){
+      for (size_type i = 0; i < __vector.size(); ++i) {
+        __vector[i] *= value;
       }
-      return temp;
+      return *this;
     }
 
-    vector operator *(const vector& right){
+    double& dot(const vector& r) const {
 
+    }
+
+    void element_by_element(const vector& r, value_type (*function)(value_type, value_type)) {
+      if (size() != r.size()) throw std::logic_error("Mismatched vector sizes");
+      for (size_type i = 0; size_type j = 0; i < size(); ++i, ++j) {
+        __vector[i] = function(__vector[i], r[i]);
+      }
+    }
+
+    double norm() const {
+      double result = 0;
+      for (size_type i = 0; i < __vector.size(); ++i) {
+        result += square(at(i));
+      }
+      return sqrt(result);
+    }
+
+    void zero() {
+      for (size_type i = 0; i < __vector.size(); ++i) {
+        __vector[i] = 0;
+      }
     }
   };
 
@@ -107,20 +185,17 @@ namespace blib{
 
     vector2D(double i, double j) : __i{ i }, __j{ j } {}
 
+    vector2D(const vector<double, 2>& v) : __i{ v[0] }, __j{ v[1] } {}
+
     ~vector2D() = default;
 
     vector2D& operator =(const vector2D&) = default;
     vector2D& operator =(vector2D&&) = default;
 
-    inline double x() { return __i; }
-    inline double y() { return __j; }
-    inline double i_hat() { return x(); }
-    inline double j_hat() { return y(); }
-
-    double dot(const vector2D& r){
-      double result;
-      result = __i * r.__i + __j * r.__j;
-    }
+    inline double x() const { return __i; }
+    inline double y() const { return __j; }
+    inline double i_hat() const { return x(); }
+    inline double j_hat() const { return y(); }
 
     vector2D& operator +(const vector2D& r){
       vector2D result;
@@ -157,8 +232,50 @@ namespace blib{
     vector2D& operator+(){
       return *this;
     }
+
+    vector2D& operator *(double scaler) const {
+      vector2D result;
+      result.__i = __i * scaler;
+      result.__j = __j * scaler;
+      return result;
+    }
+
+    vector2D& operator /(double scaler) const {
+      vector2D result;
+      result.__i = __i / scaler;
+      result.__j = __j / scaler;
+      return result;
+    }
+
+    vector2D& operator *=(double scaler) {
+      __i *= scaler;
+      __j *= scaler;
+      return *this;
+    }
+
+    vector2D& operator /=(double scaler) {
+      __i /= scaler;
+      __j /= scaler;
+      return *this;
+    }
+
+    double norm() const {
+      return sqrt(square(__i) + square(__j));
+    }
+
+    void projection(const vector2D& v) {
+      *this = (dot(*this, v) / norm()) * (*this) / norm();
+    }
+
+    inline void zero() {
+      __i = 0;
+      __j = 0;
+    }
   };
 
+  /// <summary>
+  /// A 3D mathematical vector.
+  /// </summary>
   class vector3D{
   private:
     double __i, __j, __k;
@@ -171,6 +288,7 @@ namespace blib{
     vector3D(double i, double j, double k) : __i{ i }, __j{ j }, __k{ k } {}
     vector3D(vector2D v2d) : __i{ v2d.x() }, __j{ v2d.y() }, __k{ 0 } {}
     vector3D(vector2D v2d, double k) : __i{ v2d.x() }, __j{ v2d.y() }, __k{ k } {}
+    vector3D(const vector<double, 3> v) : __i{ v[0] }, __j{ v[1] }, __k{ v[2] } {}
 
     ~vector3D() = default;
 
@@ -189,17 +307,12 @@ namespace blib{
       __k = k;
     }
 
-    inline double x() { return __i; }
-    inline double y() { return __j; }
-    inline double z() { return __k; }
-    inline double i_hat() { return x(); }
-    inline double j_hat() { return y(); }
-    inline double k_hat() { return z(); }
-
-    double dot(const vector3D& r){
-      double result;
-      result = __i * r.__i + __j * r.__j + __k * r.__k;
-    }
+    inline double x() const { return __i; }
+    inline double y() const { return __j; }
+    inline double z() const { return __k; }
+    inline double i_hat() const { return x(); }
+    inline double j_hat() const { return y(); }
+    inline double k_hat() const { return z(); }
 
     vector3D& cross(const vector3D& r){
       vector3D result;
@@ -224,65 +337,69 @@ namespace blib{
 
       return *this;
     }
+
+    vector3D& operator *(double scaler) const {
+      vector3D result;
+      result.__i = __i * scaler;
+      result.__j = __j * scaler;
+      result.__k = __k * scaler;
+      return result;
+    }
+
+    vector3D& operator /(double scaler) const {
+      vector3D result;
+      result.__i = __i / scaler;
+      result.__j = __j / scaler;
+      result.__k = __k / scaler;
+      return result;
+    }
+
+    vector3D& operator *=(double scaler) {
+      __i *= scaler;
+      __j *= scaler;
+      __k *= scaler;
+      return *this;
+    }
+
+    vector3D& operator /=(double scaler) {
+      __i /= scaler;
+      __j /= scaler;
+      __k /= scaler;
+      return *this;
+    }
+
+    double norm() const {
+      return sqrt(square(__i) + square(__j) + square(__k));
+    }
+
+    void projection(const vector3D& v) {
+      *this = (dot(*this, v) / norm()) * (*this) / norm();
+    }
+
+    inline void zero() {
+      __i = 0;
+      __j = 0;
+      __k = 0;
+    }
   };
 
+  /// <summary>
+  /// This represents the mathematical concept of the quaternion. This is being based on
+  /// <see cref="https://www.sciencedirect.com/topics/computer-science/quaternion-multiplication"/> and
+  /// <see cref="https://eater.net/quaternions"/>.
+  /// </summary>
   class quaternion{
   private:
     double __scaler, __i, __j, __k;
 
-    inline double x() { return __i; }
-    inline double y() { return __j; }
-    inline double z() { return __k; }
-
-    class __Iterator__{
-    private:
-      double* itr;
-
-      __Iterator__(double* value) : itr{ value } {}
-
-    public:
-      __Iterator__() = default;
-      __Iterator__(const __Iterator__&) = default;
-      __Iterator__(__Iterator__&&) = default;
-
-      void next(){
-        if(itr == &__scaler) itr = &__i;
-        else if(itr == &__i) itr = &__j;
-        else if(itr == &__j) itr = &__k;
-        else if(itr == &__k) itr += 1;
-        else throw std::out_of_range("A quaternion only has 4 values.");
-      }
-
-      void previous(){
-        if(itr == &__k) itr = &__j;
-        else if(itr == &__j) itr = *__i;
-        else if(itr == &__i) itr = *__scaler;
-        else if(itr == &__scaler) itr -= 1;
-        else throw std::out_of_range("A quaternion only has 4 values.");
-      }
-
-      __Iterator__& operator ++(int){
-        next();
-        return *this;
-      }
-
-      __Iterator__& operator --(int){
-        previous();
-        return *this;
-      }
-
-      double& operator *(){
-        return *itr;
-      }
-
-    };
+    inline double x() const { return __i; }
+    inline double y() const { return __j; }
+    inline double z() const { return __k; }
 
   public:
 
     using value_type = double;
 		using size_type = size_t;
-		using iterator = __Iterator__;
-		using const_iterator = const __Iterator__;
 
     quaternion() = default;
     quaternion(const quaternion&) = default;
@@ -303,16 +420,12 @@ namespace blib{
       __k = v3d.z();
     }
 
-    iterator begin(){
-      return iterator(&__scaler);
-    }
-
-    iterator end(){
-      return iterator((&__k) + 1);
+    explicit operator vector3D() {
+      return vector3D(__i, __j, __k);
     }
 
     inline void set(double scaller, double i, double j, double k){
-      __scaller = scaller;
+      __scaler = scaller;
       __i = i;
       __j = j;
       __k = k;
@@ -332,11 +445,11 @@ namespace blib{
       __k = v3d.z();
     }
 
-    inline double scaler_value() { return __scaler; }
-    inline double i_hat() { return x(); }
-    inline double j_hat() { return y(); }
-    inline double k_hat() { return z(); }
-    double& operator [](size_type index){
+    inline double scaler_value() const { return __scaler; }
+    inline double i_hat() const { return x(); }
+    inline double j_hat() const { return y(); }
+    inline double k_hat() const { return z(); }
+    double& operator [](size_type index) {
       switch(index){
         case 0:
           return __scaler;
@@ -354,8 +467,29 @@ namespace blib{
           throw std::out_of_range("A quaternion only has 4 values.");
       }
     }
+    const double& operator [](size_type index) const {
+      switch (index) {
+      case 0:
+        return __scaler;
+        break;
+      case 1:
+        return __i;
+        break;
+      case 2:
+        return __j;
+        break;
+      case 3:
+        return __k;
+        break;
+      default:
+        throw std::out_of_range("A quaternion only has 4 values.");
+      }
+    }
     double& at(size_type index){
-      return this->operator[index];
+      return this->operator[](index);
+    }
+    const double& at(size_type index) const {
+      return this->operator[](index);
     }
 
     quaternion& operator +(const quaternion& q){
@@ -375,7 +509,30 @@ namespace blib{
       result.__k = __i * q.__j;
       return result;
     }
+
+    inline void zero() {
+      __scaler = 0;
+      __i = 0;
+      __j = 0;
+      __k = 0;
+    }
   };
+
+  inline double dot(const vector2D& l_value, const vector2D& r_value) {
+    return l_value.x() * r_value.x() + l_value.y() * r_value.y();
+  }
+
+  inline vector2D operator *(double l_value, const vector2D& r_value) {
+    return r_value * l_value;
+  }
+
+  inline double dot(const vector3D& l_value, const vector3D& r_value) {
+    return l_value.x() * r_value.x() + l_value.y() * r_value.y();
+  }
+
+  inline vector3D operator *(double l_value, const vector3D& r_value) {
+    return r_value * l_value;
+  }
 }
 
 #endif
