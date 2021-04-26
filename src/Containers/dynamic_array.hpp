@@ -135,7 +135,7 @@ namespace blib {
 		};
 
 		template<typename arrayType, size_t CAPACITY>
-		void george_data_structures::dynamic_array<arrayType, CAPACITY>::copyArrays(const dynamic_array& source, dynamic_array& destination)
+		void dynamic_array<arrayType, CAPACITY>::copyArrays(const dynamic_array& source, dynamic_array& destination)
 		{
 				if(destination.__capacity < source.__capacity)
 						destination.capacity(source.__capacity);
@@ -143,6 +143,12 @@ namespace blib {
 				for (int i = 0; i < source.__size; ++i) {
 						destination.__array[i] = std::move(source.__array[i]);
 				}
+		}
+
+		template<typename arrayType, size_t CAPACITY>
+		dynamic_array<arrayType, CAPACITY>& dynamic_array<arrayType, CAPACITY>::insert(
+			arrayType value, iterator location, bool replace)
+		{
 		}
 
 
