@@ -49,7 +49,7 @@ namespace blib{
     /// </summary>
     /// <param name="_first">The beginning of the range</param>
     /// <param name="_second">The end of the range</param>
-    vector(pointer_type _first, pointer_type _second) : __vector() , __orient{ horizontal }{
+    vector(pointer_type _first, pointer_type _second) : __vector() , __orient{ horizontal } {
       for(auto i = _first, int j = 0; i < _second; ++i, ++j){
         __vector[j] = *i;
       }
@@ -183,8 +183,17 @@ namespace blib{
     vector2D(const vector2D&) = default;
     vector2D(vector2D&&) = default;
 
+    /// <summary>
+    /// Construct the vector based on given values
+    /// </summary>
+    /// <param name="i">The i hat component of the vector</param>
+    /// <param name="j">The j hat component of the vector</param>
     vector2D(double i, double j) : __i{ i }, __j{ j } {}
 
+    /// <summary>
+    /// Construct with a vector
+    /// </summary>
+    /// <param name="v">A vector of length 2</param>
     vector2D(const vector<double, 2>& v) : __i{ v[0] }, __j{ v[1] } {}
 
     ~vector2D() = default;
@@ -192,12 +201,36 @@ namespace blib{
     vector2D& operator =(const vector2D&) = default;
     vector2D& operator =(vector2D&&) = default;
 
+    /// <summary>
+    /// Obtain the x component of the vector
+    /// </summary>
+    /// <returns>The x component of the vector</returns>
     inline double x() const { return __i; }
+
+    /// <summary>
+    /// Obtain the y component of the vector
+    /// </summary>
+    /// <returns>The y component of the vector</returns>
     inline double y() const { return __j; }
+
+    /// <summary>
+    /// Obtain the i hat for the vector
+    /// </summary>
+    /// <returns>The i hat component of the vector</returns>
     inline double i_hat() const { return x(); }
+
+    /// <summary>
+    /// Obtain the i hat for the vector
+    /// </summary>
+    /// <returns>The i hat component of the vector</returns>
     inline double j_hat() const { return y(); }
 
-    vector2D& operator +(const vector2D& r){
+    /// <summary>
+    /// Add two 2D vectors
+    /// </summary>
+    /// <param name="r">The vector on the right side of the + sign</param>
+    /// <returns>A reference to the resulting vector</returns>
+    vector2D& operator +(const vector2D& r) const {
       vector2D result;
       result.__i = __i + r.__i;
       result.__j = __j + r.__j;
@@ -210,7 +243,7 @@ namespace blib{
       return *this;
     }
 
-    vector2D& operator -(const vector2D& r){
+    vector2D& operator -(const vector2D& r) const {
       vector2D result;
       result.__i = __i - r.__i;
       result.__j = __j - r.__j;
@@ -223,13 +256,35 @@ namespace blib{
       return *this;
     }
 
+    /// <summary>
+    /// Negates the elements of the vector
+    /// </summary>
+    /// <returns>A reference to this vector</returns>
     vector2D& operator-(){
       __i *= -1;
       __j *= -1;
       return *this;
     }
 
+    /// <summary>
+    /// Applies the + operator
+    /// </summary>
+    /// <remark>
+    /// This does nothing
+    /// </remark>
+    /// <returns>A reference to this vector</returns>
     vector2D& operator+(){
+      return *this;
+    }
+
+    /// <summary>
+    /// Applies the + operator
+    /// </summary>
+    /// <remark>
+    /// This does nothing
+    /// </remark>
+    /// <returns>A const reference to this vector</returns>
+    const vector2D& operator+() const {
       return *this;
     }
 
@@ -253,20 +308,51 @@ namespace blib{
       return *this;
     }
 
+    /// <summary>
+    /// Scaler devision of the vector
+    /// </summary>
+    /// <param name="scaler">The amount to scale the vector by</param>
+    /// <returns>A reference to this vector</returns>
     vector2D& operator /=(double scaler) {
       __i /= scaler;
       __j /= scaler;
       return *this;
     }
 
+    /// <summary>
+    /// This calculates the (euclidean) norm of the vector
+    /// </summary>
+    /// <returns>The norm of the vector</returns>
     double norm() const {
       return sqrt(square(__i) + square(__j));
     }
 
+    /// <summary>
+    /// Calculate the projection of v on the vector that is called
+    /// </summary>
+    /// <remark>
+    /// In the formula this vector is the u vector
+    /// </remark>
+    /// <param name="v">The vector casting the projection</param>
     void projection(const vector2D& v) {
       *this = (dot(*this, v) / norm()) * (*this) / norm();
     }
 
+    /// <summary>
+    /// Perform the given function on all elements and update their value
+    /// </summary>
+    /// <param name="value">The argument in the function for all of the elements</param>
+    /// <param name="function">The function to be passed, needs to take two doubles and return a double</param>
+    /// <returns>A reference to this vector</returns>
+    vector2D& element_by_element(double value, double (*function)(double, double)) {
+      __i = function(__i, value);
+      __j = function(__j, value);
+      return *this;
+    }
+
+    /// <summary>
+    /// This sets the vector to zero
+    /// </summary>
     inline void zero() {
       __i = 0;
       __j = 0;
@@ -532,6 +618,15 @@ namespace blib{
 
   inline vector3D operator *(double l_value, const vector3D& r_value) {
     return r_value * l_value;
+  }
+
+  template<typename T, size_t SIZE>
+  double dot(const vector<T, SIZE>& l_value, const vector<T, SIZE>& r_value) {
+    double result = 0;
+    for (vector<T, SIZE>::size_type i = 0; i < SIZE; ++i) {
+      result += l_value[i] * r_value[i];
+    }
+    return result;
   }
 }
 
