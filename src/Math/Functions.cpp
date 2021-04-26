@@ -62,13 +62,13 @@ namespace blib{
   double square(long base){
     return base * base;
   }
-  double squarel(long long base) {
+  long double squarel(long long base) {
     return base * base;
   }
   double cube(long base){
     return base * base * base;
   }
-  double cubel(long long base) {
+  long double cubel(long long base) {
     return base * base * base;
   }
 
